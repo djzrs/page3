@@ -1,0 +1,12 @@
+{
+  "days": [
+    {
+      "date": "2026-11-19",
+      "day": 0,
+      "label": "播种日实拍",
+      "note": "播种当天的照片。",
+      "photo": "photos/2026-11-19-real.jpg",
+      "source": "photo"
+    }
+  ]
+}
