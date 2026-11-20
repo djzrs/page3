@@ -73,7 +73,7 @@ async function loadCurrentWeather() {
   }
 }
 
-function makeEntry(record) {
+function makeEntry(record, weather) {
   const article = document.createElement('article');
   article.className = 'entry';
   if (record.photo) {
@@ -96,6 +96,17 @@ function makeEntry(record) {
     placeholder.setAttribute('aria-label', '今天还没有照片');
     placeholder.textContent = '芽';
     article.append(placeholder);
+  }
+
+  if (weather) {
+    const strip = document.createElement('div');
+    strip.className = 'entry-weather';
+    const [wname] = weatherNames[weather.code] || ['天气情况'];
+    const low = Number.isFinite(weather.min) ? Math.round(weather.min) : '—';
+    const high = Number.isFinite(weather.max) ? Math.round(weather.max) : '—';
+    const rain = Number.isFinite(weather.rain) ? Number(weather.rain).toFixed(1) : '—';
+    strip.innerHTML = `<span>${wname}</span><b>${low}° / ${high}°</b><i>降水 ${rain} mm</i>`;
+    article.append(strip);
   }
 
   const body = document.createElement('div');
@@ -121,6 +132,7 @@ function makeEntry(record) {
 
 async function loadJournal() {
   const container = $('#entries');
+  const weatherByDate = await loadWeatherIndex();
   try {
     const response = await fetch(`data/photos.json?v=${encodeURIComponent(todayShanghai())}`, { cache: 'no-store' });
     if (!response.ok) throw new Error('journal unavailable');
@@ -134,9 +146,45 @@ async function loadJournal() {
       container.append(empty);
       return;
     }
-    records.forEach((record) => container.append(makeEntry(record)));
+    records.forEach((record) => container.append(makeEntry(record, weatherByDate.get(record.date))));
+    const latest = records[0];
+    updateHeroPhoto(latest);
   } catch {
     container.textContent = '生长记录暂时无法加载，请稍后再试。';
+  }
+}
+
+async function loadWeatherIndex() {
+  const map = new Map();
+  try {
+    const response = await fetch(`data/weather.json?v=${encodeURIComponent(todayShanghai())}`, { cache: 'no-store' });
+    if (!response.ok) return map;
+    const data = await response.json();
+    (Array.isArray(data.days) ? data.days : []).forEach((record) => map.set(record.date, record));
+  } catch { /* keep empty */ }
+  return map;
+}
+
+function updateHeroPhoto(record) {
+  if (!record) return;
+  const heroDate = $('#hero-date');
+  const dateEl = $('#date');
+  const dayEl = $('#day');
+  if (heroDate) heroDate.textContent = `第 ${record.day} 天`;
+  if (dateEl) dateEl.textContent = prettyDate(record.date);
+  if (dayEl) dayEl.textContent = record.day;
+  const img = document.querySelector('.hero-photo img');
+  if (img) {
+    img.src = record.photo || 'https://picsum.photos/seed/garden/400/410.jpg';
+    img.alt = `${record.date} 的菜园照片`;
+  }
+  const caption = document.querySelector('.hero-photo figcaption');
+  if (caption) {
+    caption.innerHTML = `<span>拍摄于 <span id="hero-photo-date">${record.date}</span></span><span>第 <span id="hero-photo-day">${record.day}</span> 天</span>`;
+  }
+  const photoCaption = $('#photo-caption');
+  if (photoCaption) {
+    photoCaption.textContent = `${record.date} 的照片 · ${record.note ? record.note.split('。')[0] + '。' : '今天也认真看了看它。'}`;
   }
 }
 
