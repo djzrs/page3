@@ -173,9 +173,14 @@ function updateHeroPhoto(record) {
   if (heroDate) heroDate.textContent = `第 ${record.day} 天`;
   if (dateEl) dateEl.textContent = prettyDate(record.date);
   if (dayEl) dayEl.textContent = record.day;
+  const dayNumberEl = $('#day-number');
+  if (dayNumberEl) dayNumberEl.textContent = `第 ${record.day} 天`;
+  const sectionDayEl = $('#section-day');
+  if (sectionDayEl) sectionDayEl.textContent = record.day;
   const img = document.querySelector('.hero-photo img');
   if (img) {
-    img.src = record.photo || 'https://picsum.photos/seed/garden/400/410.jpg';
+    img.src = record.photo || '';
+    if (!record.photo) img.classList.add('photo-broken');
     img.alt = `${record.date} 的菜园照片`;
   }
   const caption = document.querySelector('.hero-photo figcaption');
