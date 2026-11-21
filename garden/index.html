@@ -133,7 +133,7 @@ main{max-width:var(--content);margin:auto;padding:0 28px}
 </div>
 <div class="hero-photo">
 <figure>
-<img id="hero-photo-img" src="photos/2026-11-20-day1.jpg?v=20261120" alt="奶油白菜的日常照片" onerror="this.src='https://picsum.photos/seed/garden/400/410.jpg'">
+<img id="hero-photo-img" src="photos/2026-11-20-day1.jpg?v=20261120" alt="奶油白菜的日常照片" onerror="this.classList.add('photo-broken');this.removeAttribute('src')">
 <figcaption>
 <span>拍摄于 <span id="hero-photo-date">—</span></span>
 <span>第 <span id="hero-photo-day">—</span> 天</span>
@@ -146,12 +146,12 @@ main{max-width:var(--content);margin:auto;padding:0 28px}
 <section id="today" class="today-section">
 <div class="section-intro">
 <h2>今天的 <span>生长状态</span></h2>
-<p class="section-date">第 <span id="weather-foot">1</span> 天</p>
+<p class="section-date">第 <span id="section-day">1</span> 天</p>
 </div>
 <div class="today-grid">
 <div class="panel day-card">
 <span class="card-index">DAY STATUS</span>
-<p class="day-number" id="day">第 1 天</p>
+<p class="day-number" id="day-number">第 1 天</p>
 <p class="day-caption">每一天都在认真的观察和记录</p>
 <div class="leaf-outline">❦</div>
 </div>
