@@ -1,5 +1,5 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>奶油白菜生长日记</title>
-<link rel="canonical" href="."><script src="app.js" defer></script><script src="weather-nov19.js" defer></script><script src="weather-nov20.js" defer></script><script src="weather-nov21.js" defer></script>
+<link rel="canonical" href="."><script src="app.js?v=20261125-fix" defer></script><script src="weather-nov19.js" defer></script><script src="weather-nov20.js" defer></script><script src="weather-nov21.js" defer></script>
 <style>
 /* Reset and base styles */
 :root{--ink:#17372c;--ink-soft:#355449;--muted:#71877a;--leaf:#789676;--leaf-dark:#406c4c;--cream:#f5f7ef;--paper:#fffefa;--line:#dce5d9;--sun:#e7a25d;--serif:"Noto Serif SC","Songti SC",STSong,Georgia,serif;--sans:"DM Sans","PingFang SC","Microsoft YaHei",sans-serif;--mono:"DM Mono",monospace;--content:1120px}
@@ -106,29 +106,34 @@ main{max-width:var(--content);margin:auto;padding:0 28px}
 .reminder-panel label{display:block;margin-bottom:10px;color:#617466;font-size:11px}
 .reminder-controls{display:flex;gap:9px}
 .reminder-controls input{min-width:0;padding:10px 12px;border:1px solid #cad8c7;border-radius:3px;background:white;color:var(--ink);font:13px var(--mono)}
+
+.hero-photo figure{margin:0;height:100%}
+footer{max-width:1120px;margin:auto;padding:0 28px 24px}
+@media(max-width:760px){.topbar{height:auto;min-height:80px;padding:16px;gap:12px;flex-wrap:wrap}.hero{grid-template-columns:1fr;gap:28px;padding:32px 0}.hero-copy{padding:0}.hero-photo{min-height:300px;margin-right:13px}.hero-photo img{min-height:300px;max-height:440px}.today-grid{grid-template-columns:1fr}.entries{grid-template-columns:repeat(2,minmax(0,1fr))}.archive{grid-template-columns:repeat(2,minmax(0,1fr))}.reminder-section{grid-template-columns:1fr;padding:24px 18px;gap:20px}main{padding:0 18px}.section-heading,.section-intro{align-items:start;flex-wrap:wrap}.hero h1{font-size:36px}.reminder-panel{padding:16px 12px}.reminder-controls{flex-wrap:wrap}}
+@media(max-width:440px){.entries{grid-template-columns:1fr}.nav-meta{font-size:10px}.hero h1{font-size:32px}}
 </style>
 </head>
 <body>
 <header class="topbar">
-<a href="/garden/" class="brand">
+<a href="./" class="brand">
 <div class="brand-mark">叶</div>
-<p>奶油白菜生长日记 <small>THE BITTER MELON JOURNAL</small></p>
+<p>奶油白菜生长日记 <small>THE CABBAGE JOURNAL</small></p>
 </a>
 <div class="nav-meta">
 <span class="live-dot"></span>
-<span id="weather-status">正在更新</span>
+<span data-weather-status>正在更新</span>
 <span class="nav-divider">·</span>
-<a href="/garden/#archive" class="nav-link">天气档案 <span>Archive</span></a>
+<a href="#archive" class="nav-link">天气档案 <span>Archive</span></a>
 </div>
 </header>
 <main>
 <section class="hero">
 <div class="hero-copy">
-<div class="kicker"><span>第 <span id="hero-date">—</span></span> <div class="kicker-line"></div></div>
+<div class="kicker"><span id="hero-date">—</span> <div class="kicker-line"></div></div>
 <p class="hero-date" id="date">—</p>
-<h1>第 <em id="day">—</em> 天 · <em>今天的成长</em></h1>
+<h1>第 <em id="day">—</em> 天 · <em>生长记录</em></h1>
 <p class="hero-intro">每天都认真的看看它，记录下它的变化。</p>
-<a href="#today" class="hero-cta"><span>查看今天的统计</span></a>
+<a href="#today" class="hero-cta"><span>查看生长记录</span></a>
 <p class="hero-caption">每天更新，捕捉每一次变化</p>
 </div>
 <div class="hero-photo">
@@ -145,7 +150,7 @@ main{max-width:var(--content);margin:auto;padding:0 28px}
 
 <section id="today" class="today-section">
 <div class="section-intro">
-<h2>今天的 <span>生长状态</span></h2>
+<h2>最近的 <span>生长记录</span></h2>
 <p class="section-date">第 <span id="section-day">1</span> 天</p>
 </div>
 <div class="today-grid">
@@ -158,7 +163,7 @@ main{max-width:var(--content);margin:auto;padding:0 28px}
 <div class="panel weather-card">
 <div class="weather-card-top">
 <div class="weather-status">
-<i class="live-dot"></i> <span id="weather-status">正在更新</span>
+<i class="live-dot"></i> <span data-weather-status>正在更新</span>
 </div>
 <div class="weather-symbol" id="weather-symbol">☁</div>
 </div>
@@ -177,17 +182,17 @@ main{max-width:var(--content);margin:auto;padding:0 28px}
 </div>
 </div>
 <div class="weather-details">
-<div>风向 <b id="wind">--</b></div>
-<div>湿度 <b id="humidity">--</b></div>
-<div>气压 <b id="pressure">--</b></div>
-<div>能见度 <b id="visibility">--</b></div>
+<div>风向 <b id="wind">暂无数据</b></div>
+<div>湿度 <b id="humidity">暂无数据</b></div>
+<div>气压 <b id="pressure">暂无数据</b></div>
+
 </div>
 </div>
 <div class="panel photo-card">
 <div class="photo-icon">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11.2a1 1 0 0 1 .7.3l3.8 3.8a1 1 0 0 1 .3.7V19zM5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z"></path><circle cx="8.5" cy="8.5" r="1.5"></circle></svg>
 </div>
-<h3>今天的照片</h3>
+<h3>最近的照片</h3>
 <p id="photo-caption">今天还没有照片。你可以拍一张照片并分享到聊天里，留住它的生长变化。</p>
 <p class="text-link" onclick="alert('照片上传功能需要与聊天系统集成')"><span>了解如何上传照片</span></p>
 </div>
@@ -216,7 +221,7 @@ main{max-width:var(--content);margin:auto;padding:0 28px}
 
 <section class="reminder-section">
 <div class="reminder-copy">
-<h2>每日提醒 <em>每日提醒</em></h2>
+<h2>每日 <em>拍照提醒</em></h2>
 <p>设置一个时间，每日提醒你给奶油白菜拍一张照片，发到聊天里，留住它的生长变化。</p>
 </div>
 <div class="reminder-panel">

@@ -1,6 +1,7 @@
 const START_DATE = '2026-11-19';
 const LOCATION = { latitude: 32.9, longitude: 115.817, label: '阜阳' };
 const $ = (selector) => document.querySelector(selector);
+function setWeatherStatus(text) { document.querySelectorAll('[data-weather-status]').forEach(el => el.textContent = text); }
 
 const weatherNames = {
   0: ['晴朗', '☀'], 1: ['大致晴朗', '🌤'], 2: ['局部多云', '⛅'], 3: ['阴天', '☁'],
@@ -43,7 +44,7 @@ let currentWeatherLoaded = false;
 async function loadCurrentWeather() {
   const query = new URLSearchParams({
     latitude: LOCATION.latitude, longitude: LOCATION.longitude,
-    current: 'temperature_2m,apparent_temperature,weather_code',
+    current: 'temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,surface_pressure,wind_direction_10m',
     daily: 'weather_code,temperature_2m_max,temperature_2m_min',
     timezone: 'Asia/Shanghai', forecast_days: '1'
   });
@@ -58,14 +59,18 @@ async function loadCurrentWeather() {
     const today = data.daily;
     const [name] = weatherNames[now.weather_code] || ['天气情况'];
     currentWeatherLoaded = true;
+    const directions = ['北','东北','东','东南','南','西南','西','西北'];
+    $('#wind').textContent = Number.isFinite(now.wind_direction_10m) ? directions[Math.round(now.wind_direction_10m / 45) % 8] + '风' : '暂无数据';
+    $('#humidity').textContent = Number.isFinite(now.relative_humidity_2m) ? now.relative_humidity_2m + '%' : '暂无数据';
+    $('#pressure').textContent = Number.isFinite(now.surface_pressure) ? Math.round(now.surface_pressure) + ' hPa' : '暂无数据';
     $('#current-temp').firstChild.textContent = String(Math.round(now.temperature_2m));
     $('#feels-like').textContent = `${Math.round(now.apparent_temperature)}°`;
     setWeatherSummary(now.weather_code, today.temperature_2m_max[0], today.temperature_2m_min[0]);
-    $('#weather-status').textContent = '实时更新';
+    setWeatherStatus('实时更新');
     const updateTime = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
     $('#weather-foot').textContent = `${LOCATION.label} · ${name} · 更新于 ${updateTime}`;
   } catch {
-    $('#weather-status').textContent = '暂时离线';
+    setWeatherStatus('暂时离线');
     $('#current-weather').textContent = '实时天气暂不可用';
     $('#weather-foot').textContent = '历史天气仍会在天气档案中保留';
   } finally {
@@ -232,7 +237,7 @@ async function loadWeatherArchive(today) {
     records.forEach((record) => archive.append(makeWeatherCard(record)));
     const latest = records[0];
     if (!currentWeatherLoaded) {
-      $('#weather-status').textContent = '历史记录可用';
+      setWeatherStatus('历史记录可用');
       $('#weather-foot').textContent = `最近归档 ${latest.date} · Open-Meteo 历史天气`;
     }
   } catch {
@@ -318,7 +323,7 @@ async function init() {
   $('#hero-date').textContent = prettyDate(today).toUpperCase();
   $('#date').textContent = prettyDate(today);
   const day = dayNumber(today);
-  $('#day').textContent = day < 0 ? '尚未开始' : `第 ${day} 天`;
+  $('#day').textContent = day < 0 ? '—' : day;
   initReminder();
   await Promise.all([loadCurrentWeather(), loadJournal(), loadWeatherArchive(today)]);
 }
