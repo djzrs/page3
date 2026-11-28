@@ -1,6 +1,21 @@
 {
   "days": [
     {
+      "date": "2026-11-28",
+      "day": 9,
+      "label": "奶油白菜实拍",
+      "note": "播种后第 9 天，归档当日收到的奶油白菜照片。",
+      "photo": "photos/2026-11-28-day9.jpg",
+      "source": "photo"
+    },
+    {
+      "date": "2026-11-27",
+      "day": 8,
+      "label": "菜园实拍",
+      "note": "播种后第 8 天，当天未收到照片。",
+      "source": "placeholder"
+    },
+    {
       "date": "2026-11-26",
       "day": 7,
       "label": "奶油白菜实拍",
